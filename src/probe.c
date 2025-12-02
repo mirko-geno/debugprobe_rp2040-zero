@@ -30,7 +30,6 @@
 #include <hardware/clocks.h>
 #include <hardware/gpio.h>
 
-#include "led.h"
 #include "probe_config.h"
 #include "probe.h"
 #include "tusb.h"
@@ -62,9 +61,13 @@ static struct _probe probe;
 void probe_set_swclk_freq(uint freq_khz) {
         uint clk_sys_freq_khz = clock_get_hz(clk_sys) / 1000;
         probe_info("Set swclk freq %dKHz sysclk %dkHz\n", freq_khz, clk_sys_freq_khz);
-        uint32_t divider = clk_sys_freq_khz / freq_khz / 4;
+        // Round up (otherwise fast swclks get faster)
+        uint32_t divider = (((clk_sys_freq_khz + freq_khz - 1)/ freq_khz) + 3) / 4;
         if (divider == 0)
             divider = 1;
+        if (divider > 65535)
+            divider = 65535;
+
         pio_sm_set_clkdiv_int_frac(pio0, PROBE_SM, divider, 0);
 }
 
@@ -147,6 +150,7 @@ void probe_write_mode(void) {
 
 void probe_init() {
     if (!probe.initted) {
+        probe_gpio_init();
         uint offset = pio_add_program(pio0, &probe_program);
         probe.offset = offset;
 
@@ -172,7 +176,7 @@ void probe_deinit(void)
     pio_remove_program(pio0, &probe_program, probe.offset);
 
     probe_assert_reset(1);	// de-assert nRESET
-
+    probe_gpio_deinit();
     probe.initted = 0;
   }
 }
