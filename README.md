@@ -114,3 +114,11 @@ To enable AutoBaud, configure the USB CDC port to the following custom baud rate
 
 Changing the baud rate to any other value disables AutoBaud.
 
+
+# probe-rs
+probe-rs works perfectly with rp-2040 zero, but the following must be added to the probe-rs.rules (udev) file in order to be accessible in linux:
+```
+# Raspberry Pi Debugprobe RP2040-Zero (CMSIS-DAP)
+ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="000c", MODE="660", GROUP="plugdev", TAG+="uaccess"
+```
+
