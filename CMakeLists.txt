@@ -23,6 +23,7 @@ add_executable(debugprobe
         src/sw_dp_pio.c
         src/tusb_edpt_handler.c
         src/autobaud.c
+        src/led.c
 )
 
 pico_generate_pio_header(debugprobe ${CMAKE_CURRENT_LIST_DIR}/src/ws2812.pio OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/generated)

@@ -43,6 +43,7 @@
 #include "cdc_uart.h"
 #include "autobaud.h"
 #include "get_serial.h"
+#include "led.h"
 #include "tusb_edpt_handler.h"
 #include "DAP.h"
 #include "hardware/structs/usb.h"
