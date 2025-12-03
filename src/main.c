@@ -143,6 +143,8 @@ int main(void) {
 
     DAP_Setup();
 
+    led_init();
+
     probe_info("Welcome to debugprobe!\n");
 
     if (THREADED) {
